@@ -11,5 +11,5 @@ Block diffusion language models process many tokens in parallel, inflating the n
 
 My dissertation co-designs a token-aware, saliency-guided expert utility metric with diffusion-specific expert caching and execution. This preserves 91% of the model's baseline performance, while yielding a 7.86-10.6x improvement in TPS over existing works.
 
-Supervised by Dr. Hongxiang Fan
+Supervised by [Dr. Hongxiang Fan](https://os-hxfan.github.io/)
 
