@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import '../styles/global.css';
 
 export interface Props {
   title?: string;
@@ -50,7 +51,6 @@ const writeups = writeupEntries
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="stylesheet" href="/styles/global.css" />
   </head>
   <body>
     <div class="window">
