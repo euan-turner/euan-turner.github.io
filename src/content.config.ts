@@ -25,11 +25,30 @@ const research = defineCollection({
   }),
 });
 
+const education = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/education' }),
+  schema: z.object({
+    institution: z.string(),
+    degree: z.string(),
+    period: z.string(),
+    start: z.string(),        // ISO date, used for sorting (most recent first)
+    url: z.string().optional(),
+    dissertation: z.object({
+      title: z.string(),
+      url: z.string().optional(),
+    }).optional(),
+    modules: z.array(z.string()).default([]),
+    awards: z.array(z.string()).default([]),
+    tags: z.array(z.string()).default([]),
+  }),
+});
+
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
   schema: z.object({
     title: z.string(),
-    date: z.string(),         // ISO date, used for sorting
+    order: z.number().default(99),
+    date: z.string(),
     url: z.string().optional(),
     tags: z.array(z.string()).default([]),
   }),
@@ -39,6 +58,7 @@ const activities = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/activities' }),
   schema: z.object({
     title: z.string(),
+    order: z.number().default(99),
     org: z.string().optional(),
     period: z.string().optional(),
     url: z.string().optional(),
@@ -57,4 +77,4 @@ const writeups = defineCollection({
   }),
 });
 
-export const collections = { experience, research, projects, activities, writeups };
+export const collections = { experience, education, research, projects, activities, writeups };

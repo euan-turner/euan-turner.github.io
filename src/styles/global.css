@@ -364,6 +364,50 @@ html, body {
   max-width: 480px;
 }
 
+.about-bio a {
+  color: var(--text-constant);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--text-constant) 40%, transparent);
+  transition: color 0.1s, border-color 0.1s;
+}
+
+.about-bio a:hover {
+  color: var(--text-keyword);
+  border-bottom-color: var(--text-keyword);
+}
+
+.about-interests {
+  margin-bottom: 14px;
+}
+
+.about-interests__label {
+  font-size: 11px;
+  color: var(--text-comment);
+  margin-bottom: 5px;
+  letter-spacing: 0.03em;
+}
+
+.about-interests__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.about-interests__list li {
+  font-size: 13px;
+  color: var(--text);
+  padding-left: 1.1em;
+  position: relative;
+}
+
+.about-interests__list li::before {
+  content: '–';
+  position: absolute;
+  left: 0;
+  color: var(--text-muted);
+}
+
 .about-links {
   display: flex;
   flex-wrap: wrap;
@@ -468,6 +512,57 @@ html, body {
   background: #2d3748;
   color: var(--text-constant);
   border: 1px solid #394b61;
+}
+
+/* Education card sub-sections */
+.edu-section {
+  margin-top: 10px;
+}
+
+.edu-section__label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-comment);
+  margin-bottom: 4px;
+  letter-spacing: 0.03em;
+}
+
+.edu-section__value {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.edu-link {
+  color: var(--text-constant);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--text-constant) 40%, transparent);
+  transition: color 0.1s, border-color 0.1s;
+}
+
+.edu-link:hover {
+  color: var(--text-keyword);
+  border-bottom-color: var(--text-keyword);
+}
+
+.edu-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.edu-list li {
+  font-size: 13px;
+  color: var(--text);
+  padding-left: 1.1em;
+  position: relative;
+}
+
+.edu-list li::before {
+  content: '–';
+  position: absolute;
+  left: 0;
+  color: var(--text-muted);
 }
 
 /* Inline markdown body inside cards */

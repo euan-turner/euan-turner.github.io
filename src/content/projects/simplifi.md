@@ -2,6 +2,7 @@
 title: "SimpliFI"
 date: "2024-06-01"
 url: "https://github.com/ic-monads/SimpliFI"
+order: 2
 tags: ["TypeScript", "Prisma", "Next.js"]
 ---
 

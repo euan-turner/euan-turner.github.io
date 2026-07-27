@@ -13,8 +13,9 @@ const {
   activeFileId,
 } = Astro.props;
 
-const [experienceEntries, researchEntries, projectEntries, activityEntries, writeupEntries] = await Promise.all([
+const [experienceEntries, educationEntries, researchEntries, projectEntries, activityEntries, writeupEntries] = await Promise.all([
   getCollection('experience'),
+  getCollection('education'),
   getCollection('research'),
   getCollection('projects'),
   getCollection('activities'),
@@ -24,13 +25,17 @@ const [experienceEntries, researchEntries, projectEntries, activityEntries, writ
 const experience = experienceEntries
   .sort((a, b) => new Date(b.data.start).getTime() - new Date(a.data.start).getTime());
 
+const education = educationEntries
+  .sort((a, b) => new Date(b.data.start).getTime() - new Date(a.data.start).getTime());
+
 const research = researchEntries
   .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 
 const projects = projectEntries
-  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+  .sort((a, b) => a.data.order - b.data.order);
 
-const activities = activityEntries;
+const activities = activityEntries
+  .sort((a, b) => a.data.order - b.data.order);
 
 const writeups = writeupEntries
   .filter(w => !w.data.draft)
@@ -79,22 +84,6 @@ const writeups = writeupEntries
               <span class="tree-file__name">about.md</span>
             </a>
 
-            <!-- experience/ -->
-            <a href="/#experience" class="tree-folder tree-folder--link" style="padding-left: 24px;" data-folder-id="experience">
-              <span class="tree-folder__icon">📁</span>
-              <span class="tree-folder__name">experience</span>
-            </a>
-            {experience.map(e => (
-              <a
-                href={`/#exp-${e.id}`}
-                class="tree-file tree-file--md"
-                data-file-id={`exp-${e.id}`}
-              >
-                <span class="tree-file__icon">📄</span>
-                <span class="tree-file__name">{e.id}.md</span>
-              </a>
-            ))}
-
             <!-- research/ -->
             <a href="/#research" class="tree-folder tree-folder--link" style="padding-left: 24px;" data-folder-id="research">
               <span class="tree-folder__icon">📁</span>
@@ -108,6 +97,38 @@ const writeups = writeupEntries
               >
                 <span class="tree-file__icon">📄</span>
                 <span class="tree-file__name">{r.id}.md</span>
+              </a>
+            ))}
+
+            <!-- education/ -->
+            <a href="/#education" class="tree-folder tree-folder--link" style="padding-left: 24px;" data-folder-id="education">
+              <span class="tree-folder__icon">📁</span>
+              <span class="tree-folder__name">education</span>
+            </a>
+            {education.map(e => (
+              <a
+                href={`/#edu-${e.id}`}
+                class="tree-file tree-file--md"
+                data-file-id={`edu-${e.id}`}
+              >
+                <span class="tree-file__icon">📄</span>
+                <span class="tree-file__name">{e.id}.md</span>
+              </a>
+            ))}
+
+            <!-- experience/ -->
+            <a href="/#experience" class="tree-folder tree-folder--link" style="padding-left: 24px;" data-folder-id="experience">
+              <span class="tree-folder__icon">📁</span>
+              <span class="tree-folder__name">experience</span>
+            </a>
+            {experience.map(e => (
+              <a
+                href={`/#exp-${e.id}`}
+                class="tree-file tree-file--md"
+                data-file-id={`exp-${e.id}`}
+              >
+                <span class="tree-file__icon">📄</span>
+                <span class="tree-file__name">{e.id}.md</span>
               </a>
             ))}
 
@@ -214,7 +235,7 @@ const writeups = writeupEntries
           el.classList.toggle('is-active', el.dataset.folderId === section);
         });
         // Status bar
-        if (statusEl) statusEl.textContent = `📄 ${fileId.replace(/^(exp|res|proj|act|writeup)-/, '')}.md`;
+        if (statusEl) statusEl.textContent = `📄 ${fileId.replace(/^(exp|edu|res|proj|act|writeup)-/, '')}.md`;
       }
 
       // Intersection observer — fires when a file-section enters the viewport

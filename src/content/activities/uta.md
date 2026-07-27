@@ -3,6 +3,7 @@ title: "Undergraduate Teaching Assistant"
 org: "Department of Computing, Imperial College London"
 period: "Oct 2023 - Mar 2026"
 url: ""
+order: 3
 tags: ["teaching"]
 ---
 

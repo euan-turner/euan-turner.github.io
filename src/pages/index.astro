@@ -2,8 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection, render } from 'astro:content';
 
-const [rawExperience, rawResearch, rawProjects, rawActivities, rawWriteups] = await Promise.all([
+const [rawExperience, rawEducation, rawResearch, rawProjects, rawActivities, rawWriteups] = await Promise.all([
   getCollection('experience'),
+  getCollection('education'),
   getCollection('research'),
   getCollection('projects'),
   getCollection('activities'),
@@ -22,14 +23,21 @@ const research = await Promise.all(
     .map(async r => ({ ...r, Content: (await render(r)).Content }))
 );
 
+const education = await Promise.all(
+  rawEducation
+    .sort((a, b) => new Date(b.data.start).getTime() - new Date(a.data.start).getTime())
+    .map(async e => ({ ...e, Content: (await render(e)).Content }))
+);
+
 const projects = await Promise.all(
   rawProjects
-    .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+    .sort((a, b) => a.data.order - b.data.order)
     .map(async p => ({ ...p, Content: (await render(p)).Content }))
 );
 
 const activities = await Promise.all(
   rawActivities
+    .sort((a, b) => a.data.order - b.data.order)
     .map(async a => ({ ...a, Content: (await render(a)).Content }))
 );
 
@@ -50,7 +58,7 @@ const writeups = rawWriteups
     <div class="about-grid">
       <div>
         <img
-          src="/headshot.jpg"
+          src="/headshot.png"
           alt="Euan Turner"
           class="about-photo"
           onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
@@ -59,11 +67,18 @@ const writeups = rawWriteups
       </div>
       <div>
         <h1 class="about-name">Euan Turner</h1>
-        <p class="about-tagline">// researcher · engineer · runner</p>
+        <p class="about-tagline">// mlsys research ·  </p>
         <p class="about-bio">
-          Brief bio goes here. A sentence or two about your research focus,
-          where you're based, and what you care about.
+          Incoming PhD in the <a href="https://os-hxfan.github.io/pages/team" target="_blank" rel="noopener">Intelligent Heterogeneous Computing Lab</a> at Imperial College London, supervised by <a href="https://os-hxfan.github.io/index" target="_blank" rel="noopener">Dr. Hongxiang Fan</a>.
         </p>
+        <div class="about-interests">
+          <p class="about-interests__label">// research interests</p>
+          <ul class="about-interests__list">
+            <li>Efficient systems for inference over heterogeneous workloads and hardware</li>
+            <li>Applications of computational optimisation to model serving</li>
+            <li>Systems for energy-efficient inference</li>
+          </ul>
+        </div>
         <div class="about-links">
           <a href="https://github.com/euan-turner" class="about-link" target="_blank" rel="noopener">GitHub</a>
           <a href="mailto:euanoturner@gmail.com" class="about-link">Email</a>
@@ -73,34 +88,6 @@ const writeups = rawWriteups
     </div>
   </section>
 
-  <!-- ── experience/*.md ──────────────────────────── -->
-  <div id="experience" class="section-anchor"></div>
-  {experience.map(({ id, data, Content }) => (
-    <section class="file-section" id={`exp-${id}`} data-file-id={`exp-${id}`} data-section="experience">
-      <div class="file-header file-header--md">
-        <span class="file-header__icon">📄</span>
-        <span class="file-header__path">euan-turner / experience / <span>{id}.md</span></span>
-      </div>
-
-      <div class="card">
-        <div class="card-top">
-          <span class="card-role">{data.role}</span>
-          <span class="card-period">{data.period}</span>
-        </div>
-        <div class="card-org">
-          {data.url
-            ? <a href={data.url} target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid var(--text-string);">{data.org}</a>
-            : data.org}
-        </div>
-        <div class="card-body-prose">
-          <Content />
-        </div>
-        <div class="tag-list" style="margin-top: 8px;">
-          {data.tags.map(t => <span class="tag">{t}</span>)}
-        </div>
-      </div>
-    </section>
-  ))}
 
   <!-- ── research/*.md ─────────────────────────────── -->
   <div id="research" class="section-anchor"></div>
@@ -121,6 +108,93 @@ const writeups = rawWriteups
           <span class="card-period">{data.year}</span>
         </div>
         <div class="card-org">{data.venue}</div>
+        <div class="card-body-prose">
+          <Content />
+        </div>
+        <div class="tag-list" style="margin-top: 8px;">
+          {data.tags.map(t => <span class="tag">{t}</span>)}
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <!-- ── education/*.md ───────────────────────────── -->
+  <div id="education" class="section-anchor"></div>
+  {education.map(({ id, data, Content }) => (
+    <section class="file-section" id={`edu-${id}`} data-file-id={`edu-${id}`} data-section="education">
+      <div class="file-header file-header--md">
+        <span class="file-header__icon">📄</span>
+        <span class="file-header__path">euan-turner / education / <span>{id}.md</span></span>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <span class="card-role">{data.degree}</span>
+          <span class="card-period">{data.period}</span>
+        </div>
+        <div class="card-org">
+          {data.url
+            ? <a href={data.url} target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid var(--text-string);">{data.institution}</a>
+            : data.institution}
+        </div>
+
+        {data.dissertation && (
+          <div class="edu-section">
+            <span class="edu-section__label">// dissertation</span>
+            <p class="edu-section__value">
+              {data.dissertation.url
+                ? <a href={data.dissertation.url} class="edu-link">{data.dissertation.title}</a>
+                : data.dissertation.title}
+            </p>
+          </div>
+        )}
+
+        {data.modules.length > 0 && (
+          <div class="edu-section">
+            <span class="edu-section__label">// relevant modules</span>
+            <ul class="edu-list">
+              {data.modules.map(m => <li>{m}</li>)}
+            </ul>
+          </div>
+        )}
+
+        {data.awards.length > 0 && (
+          <div class="edu-section">
+            <span class="edu-section__label">// awards</span>
+            <ul class="edu-list">
+              {data.awards.map(a => <li>{a}</li>)}
+            </ul>
+          </div>
+        )}
+
+        {data.tags.length > 0 && (
+          <div class="tag-list" style="margin-top: 8px;">
+            {data.tags.map(t => <span class="tag">{t}</span>)}
+          </div>
+        )}
+      </div>
+    </section>
+  ))}
+
+  <!-- ── experience/*.md ──────────────────────────── -->
+  <div id="experience" class="section-anchor"></div>
+  {experience.map(({ id, data, Content }) => (
+    <section class="file-section" id={`exp-${id}`} data-file-id={`exp-${id}`} data-section="experience">
+      <div class="file-header file-header--md">
+        <span class="file-header__icon">📄</span>
+        <span class="file-header__path">euan-turner / experience / <span>{id}.md</span></span>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <span class="card-role">{data.role}</span>
+          <span class="card-period">{data.period}</span>
+        </div>
+        <div class="card-org">
+          {data.url
+            ? <a href={data.url} target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid var(--text-string);">{data.org}</a>
+            : data.org}
+        </div>
         <div class="card-body-prose">
           <Content />
         </div>

@@ -1,8 +1,9 @@
 ---
 title: "Operations Lead"
 org: "London Universities and Colleges Athletics"
-period: "Oct 2023 - Current"
+period: "Jul 2026 - Current"
 url: "https://www.london-athletics.com/"
+order: 1
 tags: ["leadership", "sports"]
 ---
 

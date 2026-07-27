@@ -3,6 +3,7 @@ title: "Society Chair"
 org: "Imperial Cross Country & Athletics Club"
 period: "Aug 2024 - Jul 2026"
 url: "https://www.imperialcollegeunion.org/activities/a-to-z/cross-country-athletics"
+order: 2
 tags: ["leadership", "sports"]
 ---
 
