@@ -1,0 +1,237 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+const [rawExperience, rawResearch, rawProjects, rawActivities, rawWriteups] = await Promise.all([
+  getCollection('experience'),
+  getCollection('research'),
+  getCollection('projects'),
+  getCollection('activities'),
+  getCollection('writeups'),
+]);
+
+const experience = await Promise.all(
+  rawExperience
+    .sort((a, b) => new Date(b.data.start).getTime() - new Date(a.data.start).getTime())
+    .map(async e => ({ ...e, Content: (await render(e)).Content }))
+);
+
+const research = await Promise.all(
+  rawResearch
+    .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+    .map(async r => ({ ...r, Content: (await render(r)).Content }))
+);
+
+const projects = await Promise.all(
+  rawProjects
+    .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+    .map(async p => ({ ...p, Content: (await render(p)).Content }))
+);
+
+const activities = await Promise.all(
+  rawActivities
+    .map(async a => ({ ...a, Content: (await render(a)).Content }))
+);
+
+const writeups = rawWriteups
+  .filter(w => !w.data.draft)
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+---
+
+<BaseLayout>
+
+  <!-- ── about.md ─────────────────────────────────── -->
+  <section class="file-section" id="about" data-file-id="about" data-section="about">
+    <div class="file-header file-header--md">
+      <span class="file-header__icon">📄</span>
+      <span class="file-header__path">euan-turner / <span>about.md</span></span>
+    </div>
+
+    <div class="about-grid">
+      <div>
+        <img
+          src="/headshot.jpg"
+          alt="Euan Turner"
+          class="about-photo"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+        />
+        <div class="about-photo-placeholder" style="display:none;">photo</div>
+      </div>
+      <div>
+        <h1 class="about-name">Euan Turner</h1>
+        <p class="about-tagline">// researcher · engineer · runner</p>
+        <p class="about-bio">
+          Brief bio goes here. A sentence or two about your research focus,
+          where you're based, and what you care about.
+        </p>
+        <div class="about-links">
+          <a href="https://github.com/euan-turner" class="about-link" target="_blank" rel="noopener">GitHub</a>
+          <a href="mailto:euanoturner@gmail.com" class="about-link">Email</a>
+          <a href="/#cv" class="about-link">CV ↓</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── experience/*.md ──────────────────────────── -->
+  <div id="experience" class="section-anchor"></div>
+  {experience.map(({ id, data, Content }) => (
+    <section class="file-section" id={`exp-${id}`} data-file-id={`exp-${id}`} data-section="experience">
+      <div class="file-header file-header--md">
+        <span class="file-header__icon">📄</span>
+        <span class="file-header__path">euan-turner / experience / <span>{id}.md</span></span>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <span class="card-role">{data.role}</span>
+          <span class="card-period">{data.period}</span>
+        </div>
+        <div class="card-org">
+          {data.url
+            ? <a href={data.url} target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid var(--text-string);">{data.org}</a>
+            : data.org}
+        </div>
+        <div class="card-body-prose">
+          <Content />
+        </div>
+        <div class="tag-list" style="margin-top: 8px;">
+          {data.tags.map(t => <span class="tag">{t}</span>)}
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <!-- ── research/*.md ─────────────────────────────── -->
+  <div id="research" class="section-anchor"></div>
+  {research.map(({ id, data, Content }) => (
+    <section class="file-section" id={`res-${id}`} data-file-id={`res-${id}`} data-section="research">
+      <div class="file-header file-header--md">
+        <span class="file-header__icon">📄</span>
+        <span class="file-header__path">euan-turner / research / <span>{id}.md</span></span>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <span class="card-role">
+            {data.link
+              ? <a href={data.link} target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">{data.title}</a>
+              : data.title}
+          </span>
+          <span class="card-period">{data.year}</span>
+        </div>
+        <div class="card-org">{data.venue}</div>
+        <div class="card-body-prose">
+          <Content />
+        </div>
+        <div class="tag-list" style="margin-top: 8px;">
+          {data.tags.map(t => <span class="tag">{t}</span>)}
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <!-- ── projects/*.md ────────────────────────────── -->
+  <div id="projects" class="section-anchor"></div>
+  {projects.map(({ id, data, Content }) => (
+    <section class="file-section" id={`proj-${id}`} data-file-id={`proj-${id}`} data-section="projects">
+      <div class="file-header file-header--md">
+        <span class="file-header__icon">📄</span>
+        <span class="file-header__path">euan-turner / projects / <span>{id}.md</span></span>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <span class="card-role">
+            {data.url
+              ? <a href={data.url} target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">{data.title}</a>
+              : data.title}
+          </span>
+          {data.url && <a href={data.url} target="_blank" rel="noopener" class="card-link-badge">↗ view</a>}
+        </div>
+        <div class="card-body-prose">
+          <Content />
+        </div>
+        <div class="tag-list" style="margin-top: 8px;">
+          {data.tags.map(t => <span class="tag">{t}</span>)}
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <!-- ── activities/*.md ───────────────────────────── -->
+  <div id="activities" class="section-anchor"></div>
+  {activities.map(({ id, data, Content }) => (
+    <section class="file-section" id={`act-${id}`} data-file-id={`act-${id}`} data-section="activities">
+      <div class="file-header file-header--md">
+        <span class="file-header__icon">📄</span>
+        <span class="file-header__path">euan-turner / activities / <span>{id}.md</span></span>
+      </div>
+
+      <div class="card">
+        <div class="card-top">
+          <span class="card-role">{data.title}</span>
+          {data.period && <span class="card-period">{data.period}</span>}
+        </div>
+        {data.org && (
+          <div class="card-org">
+            {data.url
+              ? <a href={data.url} target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid var(--text-string);">{data.org}</a>
+              : data.org}
+          </div>
+        )}
+        <div class="card-body-prose">
+          <Content />
+        </div>
+        <div class="tag-list" style="margin-top: 8px;">
+          {data.tags.map(t => <span class="tag">{t}</span>)}
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <!-- ── writeups/ (index) ─────────────────────────── -->
+  <section class="file-section" id="writeups" data-file-id="writeups" data-section="writeups">
+    <div class="file-header file-header--md">
+      <span class="file-header__icon">📁</span>
+      <span class="file-header__path">euan-turner / <span>writeups/</span></span>
+    </div>
+
+    {writeups.length === 0 ? (
+      <p style="color: var(--text-muted); font-size: 13px;">// coming soon</p>
+    ) : (
+      <ul class="writeup-list">
+        {writeups.map(w => (
+          <li class="writeup-item">
+            <p class="writeup-date">
+              {new Date(w.data.date).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' })}
+            </p>
+            <div class="writeup-title">
+              <a href={`/writeups/${w.id}`}>{w.data.title}</a>
+            </div>
+            {w.data.description && <p class="writeup-desc">{w.data.description}</p>}
+            {w.data.tags.length > 0 && (
+              <div class="tag-list writeup-tags">
+                {w.data.tags.map(t => <span class="tag">{t}</span>)}
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+
+  <!-- ── cv.pdf ────────────────────────────────────── -->
+  <section class="file-section" id="cv" data-file-id="cv" data-section="cv">
+    <div class="file-header file-header--pdf">
+      <span class="file-header__icon">📄</span>
+      <span class="file-header__path">euan-turner / <span>cv.pdf</span></span>
+    </div>
+
+    <div class="cv-block">
+      <span class="cv-download-btn cv-download-btn--pending">↓ &nbsp;Download CV</span>
+      <p class="cv-download-note">// Coming soon</p>
+    </div>
+  </section>
+
+</BaseLayout>

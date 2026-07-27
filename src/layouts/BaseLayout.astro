@@ -1,0 +1,252 @@
+---
+import { getCollection } from 'astro:content';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  activeFileId?: string; // matches a data-file-id value; used for writeup pages
+}
+
+const {
+  title = 'Euan Turner',
+  description = 'Personal website of Euan Turner.',
+  activeFileId,
+} = Astro.props;
+
+const [experienceEntries, researchEntries, projectEntries, activityEntries, writeupEntries] = await Promise.all([
+  getCollection('experience'),
+  getCollection('research'),
+  getCollection('projects'),
+  getCollection('activities'),
+  getCollection('writeups'),
+]);
+
+const experience = experienceEntries
+  .sort((a, b) => new Date(b.data.start).getTime() - new Date(a.data.start).getTime());
+
+const research = researchEntries
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+const projects = projectEntries
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+
+const activities = activityEntries;
+
+const writeups = writeupEntries
+  .filter(w => !w.data.draft)
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/styles/global.css" />
+  </head>
+  <body>
+    <div class="window">
+
+      <div class="titlebar">
+        <span class="titlebar__text">euan-turner.github.io — Euan Turner</span>
+      </div>
+
+      <div class="body">
+
+        <!-- Activity bar -->
+        <div class="activity-bar">
+          <a href="/" class="activity-bar__btn is-active" title="Explorer" aria-label="Explorer">⎇</a>
+          <div class="activity-bar__spacer"></div>
+          <a href="https://github.com/euan-turner" class="activity-bar__btn" target="_blank" rel="noopener" title="GitHub" aria-label="GitHub">⌥</a>
+        </div>
+
+        <!-- Sidebar -->
+        <nav class="sidebar" aria-label="File explorer">
+          <div class="sidebar__header">Explorer</div>
+          <div class="sidebar__tree">
+
+            <div class="tree-folder">
+              <span class="tree-folder__icon">📁</span>
+              <span class="tree-folder__name">euan-turner</span>
+            </div>
+
+            <!-- about.md -->
+            <a href="/#about" class="tree-file tree-file--md" style="padding-left: 24px;" data-file-id="about">
+              <span class="tree-file__icon">📄</span>
+              <span class="tree-file__name">about.md</span>
+            </a>
+
+            <!-- experience/ -->
+            <a href="/#experience" class="tree-folder tree-folder--link" style="padding-left: 24px;" data-folder-id="experience">
+              <span class="tree-folder__icon">📁</span>
+              <span class="tree-folder__name">experience</span>
+            </a>
+            {experience.map(e => (
+              <a
+                href={`/#exp-${e.id}`}
+                class="tree-file tree-file--md"
+                data-file-id={`exp-${e.id}`}
+              >
+                <span class="tree-file__icon">📄</span>
+                <span class="tree-file__name">{e.id}.md</span>
+              </a>
+            ))}
+
+            <!-- research/ -->
+            <a href="/#research" class="tree-folder tree-folder--link" style="padding-left: 24px;" data-folder-id="research">
+              <span class="tree-folder__icon">📁</span>
+              <span class="tree-folder__name">research</span>
+            </a>
+            {research.map(r => (
+              <a
+                href={`/#res-${r.id}`}
+                class="tree-file tree-file--md"
+                data-file-id={`res-${r.id}`}
+              >
+                <span class="tree-file__icon">📄</span>
+                <span class="tree-file__name">{r.id}.md</span>
+              </a>
+            ))}
+
+            <!-- projects/ -->
+            <a href="/#projects" class="tree-folder tree-folder--link" style="padding-left: 24px;" data-folder-id="projects">
+              <span class="tree-folder__icon">📁</span>
+              <span class="tree-folder__name">projects</span>
+            </a>
+            {projects.map(p => (
+              <a
+                href={`/#proj-${p.id}`}
+                class="tree-file tree-file--md"
+                data-file-id={`proj-${p.id}`}
+              >
+                <span class="tree-file__icon">📄</span>
+                <span class="tree-file__name">{p.id}.md</span>
+              </a>
+            ))}
+
+            <!-- activities/ -->
+            <a href="/#activities" class="tree-folder tree-folder--link" style="padding-left: 24px;" data-folder-id="activities">
+              <span class="tree-folder__icon">📁</span>
+              <span class="tree-folder__name">activities</span>
+            </a>
+            {activities.map(a => (
+              <a
+                href={`/#act-${a.id}`}
+                class="tree-file tree-file--md"
+                data-file-id={`act-${a.id}`}
+              >
+                <span class="tree-file__icon">📄</span>
+                <span class="tree-file__name">{a.id}.md</span>
+              </a>
+            ))}
+
+            <!-- writeups/ -->
+            <a href="/#writeups" class="tree-folder tree-folder--link" style="padding-left: 24px;" data-folder-id="writeups">
+              <span class="tree-folder__icon">📁</span>
+              <span class="tree-folder__name">writeups</span>
+            </a>
+            {writeups.length === 0 ? (
+              <a href="/#writeups" class="tree-file tree-file--md" data-file-id="writeups">
+                <span class="tree-file__icon">📄</span>
+                <span class="tree-file__name">coming-soon.md</span>
+              </a>
+            ) : writeups.map(w => (
+              <a
+                href={`/writeups/${w.id}`}
+                class={`tree-file tree-file--md ${activeFileId === w.id ? 'is-active' : ''}`}
+                data-file-id={`writeup-${w.id}`}
+              >
+                <span class="tree-file__icon">📄</span>
+                <span class="tree-file__name">{w.id}.md</span>
+              </a>
+            ))}
+
+            <!-- cv.pdf -->
+            <a href="/cv.pdf" download class="tree-file tree-file--root tree-file--pdf" data-file-id="cv">
+              <span class="tree-file__icon">📄</span>
+              <span class="tree-file__name">cv.pdf</span>
+            </a>
+
+          </div>
+        </nav>
+
+        <!-- Editor pane -->
+        <div class="editor-pane">
+
+          <div class="editor-content" id="editor-content">
+            <slot />
+          </div>
+
+        </div>
+      </div>
+
+      <div class="statusbar" aria-label="Status bar">
+        <span class="statusbar__item" id="status-file">📄 about.md</span>
+        <div class="statusbar__right">
+          <span class="statusbar__item">UTF-8</span>
+          <span class="statusbar__item">Markdown</span>
+          <span class="statusbar__item">euan-turner.github.io</span>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+      const editor = document.getElementById('editor-content');
+      const statusEl = document.getElementById('status-file');
+
+      // section → tab id
+      const sectionToTab: Record<string, string> = {};
+      document.querySelectorAll<HTMLElement>('.file-section[data-section]').forEach(el => {
+        sectionToTab[el.dataset.fileId!] = el.dataset.section!;
+      });
+
+      function setActive(fileId: string, section: string) {
+        // Sidebar files
+        document.querySelectorAll<HTMLElement>('.tree-file').forEach(el => {
+          el.classList.toggle('is-active', el.dataset.fileId === fileId);
+        });
+        // Sidebar folders
+        document.querySelectorAll<HTMLElement>('.tree-folder--link').forEach(el => {
+          el.classList.toggle('is-active', el.dataset.folderId === section);
+        });
+        // Status bar
+        if (statusEl) statusEl.textContent = `📄 ${fileId.replace(/^(exp|res|proj|act|writeup)-/, '')}.md`;
+      }
+
+      // Intersection observer — fires when a file-section enters the viewport
+      const observer = new IntersectionObserver(
+        entries => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              const el = entry.target as HTMLElement;
+              setActive(el.dataset.fileId!, el.dataset.section!);
+              break;
+            }
+          }
+        },
+        { root: editor, threshold: 0.2 }
+      );
+
+      document.querySelectorAll<HTMLElement>('.file-section[data-file-id]').forEach(el => {
+        observer.observe(el);
+      });
+
+      // Smooth scroll for /#anchor links — fall back to normal navigation if target not on this page
+      document.querySelectorAll<HTMLAnchorElement>('a[href^="/#"]').forEach(a => {
+        a.addEventListener('click', e => {
+          const id = a.getAttribute('href')!.slice(2);
+          const target = document.getElementById(id);
+          if (target && editor) {
+            e.preventDefault();
+            editor.scrollTo({ top: (target as HTMLElement).offsetTop, behavior: 'smooth' });
+          }
+          // else: let the browser navigate normally to /#id on the home page
+        });
+      });
+    </script>
+  </body>
+</html>

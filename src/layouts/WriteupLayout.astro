@@ -1,0 +1,42 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+export interface Props {
+  title: string;
+  description?: string;
+  date: string;
+  tags?: string[];
+  id: string;
+}
+
+const { title, description, date, tags = [], id } = Astro.props;
+
+const formatted = new Date(date).toLocaleDateString('en-GB', {
+  year: 'numeric', month: 'short', day: 'numeric',
+});
+---
+
+<BaseLayout
+  title={`${title} — Euan Turner`}
+  description={description}
+  activeFile={id}
+>
+  <section class="file-section" id="writeup" data-id="writeups">
+    <div class="file-header file-header--md">
+      <span class="file-header__icon">📄</span>
+      <span class="file-header__path">euan-turner / writeups / <span>{id}.md</span></span>
+    </div>
+
+    <a href="/#writeups" class="back-link">writeups/</a>
+
+    <div class="prose">
+      <h1>{title}</h1>
+      {description && <p style="color: var(--text-muted); margin-bottom: 0.5rem;">{description}</p>}
+      <p style="color: var(--text-number); font-size: 12px; margin-bottom: 1.5rem;">
+        {formatted}
+        {tags.map(t => <span class="tag" style="margin-left: 6px;">{t}</span>)}
+      </p>
+      <slot />
+    </div>
+  </section>
+</BaseLayout>

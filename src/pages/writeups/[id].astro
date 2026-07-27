@@ -1,0 +1,24 @@
+---
+import { getCollection, render } from 'astro:content';
+import WriteupLayout from '../../layouts/WriteupLayout.astro';
+
+export async function getStaticPaths() {
+  const writeups = await getCollection('writeups');
+  return writeups
+    .filter(w => !w.data.draft)
+    .map(w => ({ params: { id: w.id }, props: { writeup: w } }));
+}
+
+const { writeup } = Astro.props;
+const { Content } = await render(writeup);
+---
+
+<WriteupLayout
+  title={writeup.data.title}
+  description={writeup.data.description}
+  date={writeup.data.date}
+  tags={writeup.data.tags}
+  id={writeup.id}
+>
+  <Content />
+</WriteupLayout>
