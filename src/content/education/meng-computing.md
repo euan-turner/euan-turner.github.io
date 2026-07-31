@@ -8,7 +8,7 @@ modules:
   - "Deep Learning"
   - "Scheduling and Resource Allocation"
   - "Mathematics for Machine Learning"
-  - "Scheduling and Resource Allocation"
+  - "Operations Research"
 awards:
   - "David Howarth Group Project Award (3rd Year, Excellence in Group Projects)"
   - "Dean's List (3rd Year, Top 10%)"
