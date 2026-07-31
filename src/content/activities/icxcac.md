@@ -14,3 +14,5 @@ Restored financial viability of the club, from a deficit of £2000 to a surplus 
 Returned Hyde Park Relays, a 76 year-old event, to profitability, ensuring its feature for the foreseeable future. Led the improvement of organisational procedures to satisfy the Royal Parks event licensing team.
 
 Represented Imperial at regional and national competitions.
+
+Recognised with Imperial Athletes' Colours for "outstanding contribution to Imperial Athletes and the wider Imperial community".

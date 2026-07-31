@@ -10,12 +10,10 @@ modules:
   - "Mathematics for Machine Learning"
   - "Operations Research"
 awards:
-  - "David Howarth Group Project Award (3rd Year, Excellence in Group Projects)"
-  - "Dean's List (3rd Year, Top 10%)"
+  - "Governors' Prize (4th Year, Best overall performance)"
+  - "Corporate Partnership Programme Award (4th Year, Excellence in dissertation)"
+  - "David Howarth Group Project Award (3rd Year, Excellence in group projects)"
   - "G-Research Prize (2nd Year, Top 10 non-final year undergraduates)"
-  - "Netcraft Prize (2nd Year, Top 10 second year students)"
-  - "Dean's List (2nd Year, Top 10%)"
-  - "Netcraft Java Award (1st Year, Top 10 in Java)"
-  - "Dean's List (1st Year, Top 10%)"
+  - "Dean's List (1st, 2nd, 3rd Year, Top 10%)"
 tags: []
 ---

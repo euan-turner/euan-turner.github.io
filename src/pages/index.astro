@@ -216,13 +216,13 @@ const writeups = rawWriteups
 
       <div class="card">
         <div class="card-top">
-          <span class="card-role">
-            {data.url
-              ? <a href={data.url} target="_blank" rel="noopener" style="color:inherit;text-decoration:none;">{data.title}</a>
-              : data.title}
-          </span>
-          {data.url && <a href={data.url} target="_blank" rel="noopener" class="card-link-badge">↗ view</a>}
+          <span class="card-role">{data.title}</span>
         </div>
+        {data.url && (
+          <div class="card-org">
+            <a href={data.url} target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid var(--text-string);">GitHub</a>
+          </div>
+        )}
         <div class="card-body-prose">
           <Content />
         </div>
